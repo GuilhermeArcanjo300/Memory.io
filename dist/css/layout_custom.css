@@ -3,3 +3,25 @@
     padding: 0px;
     box-sizing: border-box;
 }
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.group-input>label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+input[type=text] {
+    width: 100%;
+    border: 1px solid #acacac;
+    border-radius: 5px;
+    padding: 16px 10px;
+    font-size: 18px;
+}
+
+input[type=text]:focus {
+    outline: none;
+}
