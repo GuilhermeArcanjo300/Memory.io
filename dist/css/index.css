@@ -1,0 +1,31 @@
+html,
+body,
+main {
+    height: 100%;
+    width: 100%;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../image/backgroud_index.gif');
+    background-size: cover;
+    background-position: center;
+}
+
+.login__dad {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    height: 60%;
+    width: 60%;
+    padding: 30px;
+}
+
+.login__title {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 40px;
+    color: #441669;
+    font-weight: 700;
+}
