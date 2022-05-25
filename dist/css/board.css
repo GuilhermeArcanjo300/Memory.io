@@ -1,0 +1,52 @@
+.board_header{
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: #8C3283;
+    box-shadow: 0px 5px 10px #acacac;
+}
+
+.board_header-player{
+    width: 40%;
+    padding: 1rem 5rem;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.board_header-player-group{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+}
+
+.board_header-text-player{
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.board_header-text-name{
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.board_header-text-pontuacao{
+    font-size: 58px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.board_header-contador{
+    width: 20%;
+    font-size: 64px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    background-color: #8C3283;
+    margin-bottom: -30px;
+    color: #ffffff;
+}
