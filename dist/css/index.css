@@ -8,7 +8,7 @@ main {
 main {
     display: flex;
     justify-content: end;
-    background-image: url('../image/backgroud_index.gif');
+    background-image: url('../../assets/image/backgroud_index.gif');
     background-size: cover;
     background-position: center;
 }
