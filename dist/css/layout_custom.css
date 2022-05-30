@@ -25,3 +25,11 @@ input[type=text] {
 input[type=text]:focus {
     outline: none;
 }
+
+.align-left{
+    align-items: flex-start;
+}
+
+.align-right{
+    align-items: flex-end;
+}
