@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory.io</title>
+
+    <link rel="stylesheet" type="text/css" href="../css/layout_custom.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/board.css" media="screen" />
+    <!--<link rel="stylesheet" type="text/css" href="../../dist/css/layout_custom.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../../dist/css/board.css" media="screen" />-->
+</head>
+<body>
+    <main>
+        <header class="board_header">
+            <section class="board_header-player">
+                <div class="board_header-player-group align-left">
+                    <labe class="board_header-text-player">Jogador 1</labe>
+                    <labe class="board_header-text-name">GuiZera</labe>
+                </div>
+                <div class="board_header-player-group align-left">
+                    <labe class="board_header-text-pontuacao">8</labe>
+                </div>
+            </section>
+            <section class="board_header-contador" id="timer">
+                0:30
+            </section>
+            <section class="board_header-player">
+                <div class="board_header-player-group align-right">
+                    <labe class="board_header-text-pontuacao">8</labe>
+                </div>
+                <div class="board_header-player-group align-right">
+                    <labe class="board_header-text-player">Jogador 2</labe>
+                    <labe class="board_header-text-name">Manente</labe>
+                </div>
+            </section>
+        </header>
+        <p>{{titulo}}</p>
+
+        <div class="board">
+            {{#each cards}}
+                <div class="board__card" onclick="changeCard(this)" data-right="false" data-value="{{value}}">
+                    <div class="board__flipper">
+                        <div class="board__flipper-front" style="background-image: url(../../assets/image/cards/back.jpg);">
+                            
+                        </div>
+                        <div class="board__flipper-back" style="background-image: url(../../assets/image/cards/01.png);">
+                            {{title}}
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </main>
+
+
+    <script type="text/javascript">
+        
+        //timer
+
+        let time = 30;
+        const timer = document.getElementById('timer');
+        setInterval(function(){
+            if(time >= 0){timer.textContent = `0:${String(time).padStart(2, '0')}`;
+                time--;}
+            else{time = 30;
+                timer.textContent = `0:30`;}
+        }, 1000);
+
+        //vira carta
+
+        function filterCards(type){
+            return Array.from(document.querySelectorAll('.board__card'))
+                .filter(element => {
+                    const rigth = element.getAttribute("data-right") == "true";
+                    const change = element.children[0].style.transform == "rotateY(180deg)" ? true : false;
+                    return !rigth && change
+                })
+                .map(element => {
+                    if(type == 'element')
+                        return element
+                    else
+                        return element.getAttribute("data-value")
+                });
+        }
+
+        function changeCard(card){
+            const cards = filterCards('value');
+
+            if(cards.length < 1){
+                const element = card.children[0];
+                element.style.transform = "rotateY(180deg)";
+                
+            } else if(cards.length <= 1){
+                const element = card.children[0];
+                element.style.transform = "rotateY(180deg)";
+
+                const values = filterCards('value');
+                if(values[0] == values[1]){
+                    filterCards('element').forEach(card => {
+                        card.setAttribute("data-right", "true");
+                    });
+                }
+                resetCards();
+            }
+        }
+
+        function resetCards(){
+            setTimeout(function(){
+                const cards = Array.from(document.querySelectorAll('.board__card'))
+                .filter(element => {
+                    const rigth = element.getAttribute("data-right") == "true";
+                    const change = element.children[0].style.transform == "rotateY(180deg)" ? true : false;
+                    return !rigth && change
+                })
+                .map(element => {return element.children[0]});
+
+                cards.forEach(card => {
+                    card.style.transform = "rotateY(0deg)";
+                })
+            }, 2000);
+        }
+
+    </script>
+</body>
+</html>
