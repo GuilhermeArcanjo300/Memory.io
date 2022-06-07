@@ -10,9 +10,9 @@
 
 - Dependência utilizada para utilizar o protocolo WebSocket e manter uma conexão ativa entre o cliente e o servidor.
 
-### EJS
+### HandleBars
 
-- (Uma descrição muito boa AQUI)
+- Dependência de engine utilizada para renderizar templates em HTML de forma dinâmica, sem precisar utilizar o javascript para criar os componentes assim que a página carregar.
 
 ## Dependências de Desenvolvimento utilizadas
 
