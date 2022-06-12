@@ -6,7 +6,9 @@ const exphbs = require('express-handlebars');
 
 const app = express();
 
-const hbs = exphbs.create({ /* config */ });
+const hbs = exphbs.create({
+    /* config */
+});
 
 app.set('view engine', 'handlebars');
 app.engine('handlebars', hbs.engine);
@@ -14,6 +16,8 @@ app.engine('handlebars', hbs.engine);
 // configuring static folders
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
+
+app.use(express.json());
 
 const serverHttp = http.createServer(app);
 

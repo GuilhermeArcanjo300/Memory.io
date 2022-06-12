@@ -1,0 +1,7 @@
+# Ignore artifacts:
+assets
+dist
+node_modules
+*.handlebars
+package-lock.json
+package.json
