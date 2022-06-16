@@ -14,6 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" integrity="sha512-9mpsATI0KClwt+xVZfbcf2lJ8IFBAwsubJ6mI3rtULwyM3fBmQFzj0It4tGqxLOGQwGfJdk/G+fANnxfq9/cew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
+    <div id="teste"></div>
+
     <main>
         <header class="board_header">
             <section class="board_header-player">
@@ -26,7 +28,7 @@
                 </div>
             </section>
             <section class="board_header-contador" id="timer">
-                0:30
+                0:00
             </section>
             <section class="board_header-player">
                 <div class="board_header-player-group align-right">
@@ -40,81 +42,32 @@
         </header>
         <p>{{titulo}}</p>
 
-        <div class="board">
-            {{#each cards}}
-                <div class="board__card" onclick="changeCard(this)" data-right="false" data-value="{{value}}">
-                    <div class="board__flipper">
-                        <div class="board__flipper-front" style="background-image: url(../../assets/image/cards/back.jpg);">
-                            
-                        </div>
-                        <div class="board__flipper-back" style="background-image: url(../../assets/image/cards/01.png);">
-                            {{title}}
-                        </div>
-                    </div>
-                </div>
-            {{/each}}
-        </div>
+        <div class="board"></div>
     </main>
 
     <script type="text/javascript">
-        // connecting with websocket
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const params = Object.fromEntries(urlSearchParams.entries());
+        function createCard(cardObject) {
+            console.log(cardObject);
+            const cardElement = document.createElement('div');
 
-        const baseUrl = document.location.origin;
-        const socket = io(baseUrl);
+            cardElement.setAttribute('class', 'board__card');
+            cardElement.setAttribute('onclick', 'changeCard(this)');
+            cardElement.setAttribute('data-right', 'false');
+            cardElement.setAttribute('data-value', cardObject.value);
+            cardElement.innerHTML = `
+                <div class="board__flipper">
+                    <div class="board__flipper-front" style="background-image: url(../../assets/image/cards/back.jpg);"></div>
 
-        function removePlayer() {
-            socket.emit('removeLastPlayer');
-            window.location.href = document.location.origin;
+                    <div class="board__flipper-back" style="background-image: url(../../assets/image/cards/01.png);">
+                        ${cardObject.title}
+                    </div>
+                </div>
+            `;
+
+            return cardElement;
         }
 
-        socket.on('setNicknamesInLabels', nicknames => {
-            for (let i = 0; i < nicknames.length; i++) {
-                if (i === 0)
-                    document.querySelector('.board_header-player-group.align-left .board_header-text-name').innerHTML = nicknames[i];
-                else
-                    document.querySelector('.board_header-player-group.align-right .board_header-text-name').innerHTML = nicknames[i];
-            }
-        });
-
-        socket.on('playersJoined', players => {
-            if (players > 2) {
-                removePlayer();
-            }
-            else {
-                if (params?.nickname)
-                    socket.emit('sendNickname', params.nickname);
-                else
-                    removePlayer();
-            }
-        });
-
-        socket.on('checkIfPlayersReady', () => {
-            let answer = false;
-            
-            do {
-                answer = window.confirm("Você está pronto?");
-            } while (!answer);
-
-            socket.emit('playerReady');
-        });
-
-        //timer
-        let time = 4;
-        const timer = document.getElementById('timer');
-        setInterval(function () {
-            if (time >= 0) {
-                timer.textContent = `0:${String(time).padStart(2, '0')}`;
-                time--;
-            }
-            else{
-                time = 4;
-                timer.textContent = `0:04`;
-            }
-        }, 1000);
-
-        //vira carta
+        // vira carta
         function filterCards(type) {
             return Array.from(document.querySelectorAll('.board__card'))
                 .filter(element => {
@@ -167,6 +120,84 @@
             }, 2000);
         }
 
+
+
+        /*
+        const baseUrl = document.location.origin;
+        const socket = io(baseUrl);
+        const teste = document.querySelector('#teste');
+
+        socket.on('counter', function(count){
+            teste.append(`${count}`);
+        });
+        */
+
+        // connecting with websocket
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const params = Object.fromEntries(urlSearchParams.entries());
+
+        const baseUrl = document.location.origin;
+        const socket = io(baseUrl);
+
+        function removePlayer() {
+            socket.emit('removeLastPlayer');
+            window.location.href = document.location.origin;
+        }
+
+        socket.on('setNicknamesInLabels', nicknames => {
+            for (let i = 0; i < nicknames.length; i++) {
+                if (i === 0)
+                    document.querySelector('.board_header-player-group.align-left .board_header-text-name').innerHTML = nicknames[i];
+                else
+                    document.querySelector('.board_header-player-group.align-right .board_header-text-name').innerHTML = nicknames[i];
+            }
+        });
+
+        socket.on('playersJoined', players => {
+            if (players > 2) {
+                removePlayer();
+            }
+            else {
+                if (params?.nickname)
+                    socket.emit('sendNickname', params.nickname);
+                else
+                    removePlayer();
+            }
+        });
+
+        socket.on('checkIfPlayersReady', () => {
+            let answer = false;
+            
+            do {
+                answer = window.confirm("Você está pronto?");
+            } while (!answer);
+
+            socket.emit('playerReady');
+        });
+
+        // inserting shuffled game cards
+        socket.on('boardShuffled', boardObject => {
+            const boardElement = document.querySelector('.board');
+
+            for (let cardObject of boardObject) boardElement.append(createCard(cardObject));
+        });
+        
+
+        /*
+        // timer
+        let time = 4;
+        const timer = document.getElementById('timer');
+        setInterval(function () {
+            if (time >= 0) {
+                timer.textContent = `0:${String(time).padStart(2, '0')}`;
+                time--;
+            }
+            else{
+                time = 4;
+                timer.textContent = `0:04`;
+            }
+        }, 1000);
+        */
     </script>
 </body>
 </html>
