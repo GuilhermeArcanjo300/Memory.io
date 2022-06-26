@@ -43,10 +43,8 @@
                 <div class="board__card" onclick="changeCard(this)" data-right="false" data-value="{{value}}">
                     <div class="board__flipper">
                         <div class="board__flipper-front" style="background-image: url(../../assets/image/cards/back.jpg);">
-                            
                         </div>
-                        <div class="board__flipper-back" style="background-image: url(../../assets/image/cards/01.png);">
-                            {{title}}
+                        <div class="board__flipper-back" style="background-image: url(../../assets/image/cards/{{img}});">
                         </div>
                     </div>
                 </div>
@@ -119,7 +117,7 @@
                 cards.forEach(card => {
                     card.style.transform = "rotateY(0deg)";
                 })
-            }, 2000);
+            }, 1500);
         }
 
     </script>
