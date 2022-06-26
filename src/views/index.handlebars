@@ -29,10 +29,30 @@
                     <input type="text" name="nickname" id="nickname">
                 </div>
 
-                <button class="login__body-entrar">Entrar</button>
+                <button id="btnEnterRoom" class="login__body-entrar">Entrar</button>
             </content>
         </section>
     </main>
+
+    <script>
+        const baseUrl = document.location.origin;
+        const txtNickname = document.querySelector('#nickname');
+        const btnEnterRoom = document.querySelector('#btnEnterRoom');
+
+        txtNickname.addEventListener('keyup', e => {
+            if (e.keyCode === 13) btnEnterRoom.dispatchEvent(new Event('click'));
+        });
+
+        btnEnterRoom.addEventListener('click', () => {
+            if (!txtNickname?.value) {
+                alert('Preencha o seu nickname');
+                txtNickname.focus();
+                return;
+            }
+
+            window.location.href = `${baseUrl}/game?nickname=${txtNickname?.value}`;
+        });
+    </script>
 </body>
 
 </html>

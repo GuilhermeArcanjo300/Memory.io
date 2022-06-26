@@ -4,14 +4,18 @@
         "commonjs": true,
         "es2021": true
     },
-    "extends": [
-        "airbnb-base"
-    ],
+    "extends": ["airbnb-base", "prettier"],
     "parserOptions": {
         "ecmaVersion": "latest"
     },
+    "plugins": ["prettier"],
     "rules": {
         "no-plusplus": "off",
+<<<<<<< HEAD
         "linebreak-style": "off"
+=======
+        "indent": ["error", 4],
+        "no-unused-vars": "warn"
+>>>>>>> 2eae23c96651f73b23bad91cd12b2cd0a4f0e559
     }
 }
