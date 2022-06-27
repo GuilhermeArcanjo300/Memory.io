@@ -24,7 +24,7 @@
                     <labe class="board_header-text-name">Waiting...</labe>
                 </div>
                 <div class="board_header-player-group align-left">
-                    <labe class="board_header-text-pontuacao">0</labe>
+                    <labe class="board_header-text-pontuacao" id="placar_1">0</labe>
                 </div>
             </section>
             <section class="board_header-contador" id="timer">
@@ -32,7 +32,7 @@
             </section>
             <section class="board_header-player">
                 <div class="board_header-player-group align-right">
-                    <labe class="board_header-text-pontuacao">0</labe>
+                    <labe class="board_header-text-pontuacao" id="placar_2">0</labe>
                 </div>
                 <div class="board_header-player-group align-right">
                     <labe class="board_header-text-player">Jogador 2</labe>
@@ -42,33 +42,29 @@
         </header>
         <p>{{titulo}}</p>
 
-<<<<<<< HEAD
-        <div class="board">
-            {{#each cards}}
-                <div class="board__card" onclick="changeCard(this)" data-right="false" data-value="{{value}}">
-                    <div class="board__flipper">
-                        <div class="board__flipper-front" style="background-image: url(../../assets/image/cards/back.jpg);">
-                        </div>
-                        <div class="board__flipper-back" style="background-image: url(../../assets/image/cards/{{img}});">
-                        </div>
-                    </div>
-                </div>
-            {{/each}}
-        </div>
-=======
         <div class="board"></div>
->>>>>>> 2eae23c96651f73b23bad91cd12b2cd0a4f0e559
     </main>
 
     <script type="text/javascript">
+
+        const player = {
+            time: 0
+        }
+
+        const server = {
+            time: 1
+        }
+
+        let cardClick = '';
+
         function createCard(cardObject) {
-            console.log(cardObject);
             const cardElement = document.createElement('div');
 
             cardElement.setAttribute('class', 'board__card');
-            cardElement.setAttribute('onclick', 'changeCard(this)');
+            cardElement.setAttribute('onclick', 'onclickCard('+cardObject.id+')');
             cardElement.setAttribute('data-right', 'false');
             cardElement.setAttribute('data-value', cardObject.value);
+            cardElement.setAttribute('id', 'card_'+cardObject.id);
             cardElement.innerHTML = `
                 <div class="board__flipper">
                     <div class="board__flipper-front" style="background-image: url(../../assets/image/cards/back.jpg);"></div>
@@ -98,25 +94,56 @@
                 });
         }
 
-        function changeCard(card) {
+        function onclickCard(card){
+            cardClick = card;
+            socket.emit('getInfoServer', 'time');
+        }
+
+        function changeCard() {
+            sendEventChange(cardClick);
+            setchangeCard(cardClick);
+        }
+
+        function setchangeCard(card){
             const cards = filterCards('value');
+            const cardElement = document.getElementById('card_'+card);
 
             if (cards.length < 1) {
-                const element = card.children[0];
+                const element = cardElement.children[0];
                 element.style.transform = "rotateY(180deg)";
-                
+            
             } else if (cards.length <= 1) {
-                const element = card.children[0];
+                
+                const element = cardElement.children[0];
                 element.style.transform = "rotateY(180deg)";
-
                 const values = filterCards('value');
                 if (values[0] == values[1]) {
-                    filterCards('element').forEach(card => {
-                        card.setAttribute("data-right", "true");
+                    filterCards('element').forEach(cardElement => {
+                        cardElement.setAttribute("data-right", "true");
                     });
+
+                    if(server.time == player.time){
+                        console.log('setScore');
+                        socket.emit('setScore', player.time);
+                        console.log('resetTimer');
+                        socket.emit('resetTimer');
+                        console.log('fim');
+                    }
+                }
+                else{
+                    if(server.time == player.time){
+                        console.log('setTimePlayer');
+
+                        socket.emit('setTimePlayer');
+                        socket.emit('resetTimer');
+                    }
                 }
                 resetCards();
             }
+        }
+
+        function sendEventChange(card){
+            socket.emit('setEventChange', card);
         }
 
         function resetCards() {
@@ -132,10 +159,8 @@
                 cards.forEach(card => {
                     card.style.transform = "rotateY(0deg)";
                 })
-            }, 1500);
+            }, 2000);
         }
-
-
 
         /*
         const baseUrl = document.location.origin;
@@ -170,13 +195,14 @@
 
         socket.on('playersJoined', players => {
             if (players > 2) {
-                removePlayer();
+                //removePlayer();
             }
             else {
                 if (params?.nickname)
                     socket.emit('sendNickname', params.nickname);
-                else
-                    removePlayer();
+                else{
+                    //removePlayer();
+                }
             }
         });
 
@@ -187,7 +213,7 @@
                 answer = window.confirm("Você está pronto?");
             } while (!answer);
 
-            socket.emit('playerReady');
+            socket.emit('playerReady', player.time);
         });
 
         // inserting shuffled game cards
@@ -196,6 +222,41 @@
 
             for (let cardObject of boardObject) boardElement.append(createCard(cardObject));
         });
+
+        socket.on('setInfoPlayer', (pInfo) => {
+            player.time = pInfo.time
+        });
+
+        socket.on('returnInfoServer', (s) => {
+            const {type, value} = s;
+
+            console.log(s);
+
+            if(type == 'time'){
+                s.time = value;
+                server.time = s.time;
+                if(value == player.time)
+                    changeCard();
+            }
+        });
+
+        socket.on('getEventChange', (card) => {
+            setchangeCard(card);
+        });
+
+        socket.on('getScore', (server) => {
+            document.getElementById('placar_1').innerHTML = server.player1.score;
+            document.getElementById('placar_2').innerHTML = server.player2.score;
+        });
+
+
+        socket.on('setTimer', (timer) => {
+            document.getElementById('timer').textContent = `0:${String(timer).padStart(2, '0')}`;
+
+            if(timer == 0){
+                resetCards();
+            }
+        })
         
 
         /*
