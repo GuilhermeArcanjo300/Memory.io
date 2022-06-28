@@ -48,16 +48,16 @@ function shuffleCards() {
     ];
 
     const copy = [];
-    let n = cards.length;
+    const n = cards.length;
     let index;
 
     // while array still has elements to shuffle...
-    //while (n) {
+    // while (n) {
     //    index = Math.floor(Math.random() * n--);
     //    copy.push(cards.splice(index, 1)[0]);
-    //}
+    // }
 
-    //return copy;
+    // return copy;
     return cards;
 }
 

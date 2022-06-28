@@ -5,52 +5,61 @@ let board = [];
 
 const players = [];
 
-let server = {
+const server = {
     player1: {
         score: 0,
-        ready: false
+        ready: false,
     },
     player2: {
         score: 0,
-        ready: false
+        ready: false,
     },
     time: 1,
-    timer: 10
-}
+    timer: 4,
+};
 
 let Intervaltimer = null;
 
 io.on('connection', (socket) => {
-
-    //if (io.sockets.listenerCount('connection') === 1) board = shuffleCards();
-
-    if(board.length === 0){
-        board = shuffleCards()
+    function changePlayerTime() {
+        if (server.time === 1) server.time = 2;
+        else server.time = 1;
+        io.emit('changePlayerTime', server.time);
     }
-    /*
-    let counter = 10;
-    const WinnerCountdown = setInterval(() => {
-        io.sockets.emit('counter', counter);
-        counter--;
 
-        if (counter === 0) {
-            io.sockets.emit('counter', 'Congratulations You WON!!');
-            clearInterval(WinnerCountdown);
-        }
-    }, 1000);
-    */
+    function timer() {
+        server.timer = 4;
+        clearInterval(Intervaltimer);
+
+        Intervaltimer = setInterval(() => {
+            if (server.timer <= 0) {
+                changePlayerTime();
+                server.timer = 4;
+            } else {
+                io.emit('setTimer', server.timer);
+                server.timer--;
+            }
+        }, 1000);
+    }
+
+    // if (io.sockets.listenerCount('connection') === 1) board = shuffleCards();
+
+    if (board.length === 0) {
+        board = shuffleCards();
+    }
 
     // #region player
     const player = {
         id: socket.id,
         nickname: null,
-        time: players.length + 1
+        time: players.length + 1,
     };
 
     players.push(player);
     io.to(socket.id).emit('setInfoPlayer', player);
 
-    socket.emit('getInfo', server);
+    socket.emit('getInfo', server); // ouvinte de evento inexistente no frontend
+
     socket.emit('playersJoined', players.length);
     socket.emit('boardShuffled', board);
 
@@ -70,27 +79,26 @@ io.on('connection', (socket) => {
 
     if (players.length === 2) io.emit('checkIfPlayersReady');
 
-    socket.on('playerReady', (player) => {
+    socket.on('playerReady', (p) => {
         console.log(socket.id);
 
-        if(player == 1){
+        if (p === 1) {
             server.player1.ready = true;
-        }
-        else{
+        } else {
             server.player2.ready = true;
         }
 
-        if(server.player1.ready && server.player2.ready){
+        if (server.player1.ready && server.player2.ready) {
             timer();
         }
     });
 
     socket.on('getInfoServer', (prop) => {
         let info;
-        if(prop === 'time'){
+        if (prop === 'time') {
             info = server.time;
         }
-        socket.emit('returnInfoServer', {type:prop, value: info});
+        socket.emit('returnInfoServer', { type: prop, value: info });
     });
 
     socket.on('setEventChange', (card) => {
@@ -101,11 +109,10 @@ io.on('connection', (socket) => {
         changePlayerTime();
     });
 
-    socket.on('setScore', (player) => {
-        if(player == 1){
+    socket.on('setScore', (p) => {
+        if (p === 1) {
             server.player1.score++;
-        }
-        else{
+        } else {
             server.player2.score++;
         }
 
@@ -113,28 +120,4 @@ io.on('connection', (socket) => {
     });
 
     socket.on('resetTimer', () => timer());
-
-    function timer(){
-        server.timer = 10;
-        clearInterval(Intervaltimer);
-
-        Intervaltimer = setInterval(()=>{
-            if(server.timer <= 0){
-                changePlayerTime();
-                server.timer = 10;
-            }
-            else{
-                io.emit('setTimer', server.timer)
-                server.timer--;
-            }
-        }, 1000)
-    }
-
-    function changePlayerTime(){
-        if(server.time == 1)
-            server.time = 2
-        else
-            server.time = 1
-    }
-
 });
