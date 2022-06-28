@@ -80,8 +80,6 @@ io.on('connection', (socket) => {
     if (players.length === 2) io.emit('checkIfPlayersReady');
 
     socket.on('playerReady', (p) => {
-        console.log(socket.id);
-
         if (p === 1) {
             server.player1.ready = true;
         } else {

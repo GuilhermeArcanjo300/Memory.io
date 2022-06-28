@@ -123,7 +123,6 @@
                     });
 
                     if (server.time == player.time) {
-                        console.log('gatilhei pro player ' + player.time);
                         socket.emit('setScore', player.time);
                         socket.emit('resetTimer');
                     }
@@ -215,8 +214,6 @@
 
         socket.on('returnInfoServer', (s) => {
             const {type, value} = s;
-
-            console.log(s);
 
             if (type == 'time') {
                 server.time = value;
