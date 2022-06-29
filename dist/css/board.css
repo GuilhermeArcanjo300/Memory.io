@@ -69,7 +69,7 @@
 
 .board__flipper{
     position: relative;
-	transition: transform 0.8s;
+	transition: transform 0.4s;
 	transform-style: preserve-3d;
 }
 
@@ -88,4 +88,83 @@
 
 .board__flipper-back{
     transform: rotateY(180deg);
+}
+
+.modal{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff7a;
+    z-index: 2;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal > div{
+    width: 60%;
+    height: 80%;
+    padding: 20px 40px;
+    border: 5px solid rgb(112, 0, 146);
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.507);
+}
+
+.modal .modal-empate{
+    display: none;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.modal .modal-empate .modal__title{
+    text-align: center;
+    font-size: 80px;
+    color: rgb(112, 0, 146);
+    font-weight: 600;
+}
+
+.modal .modal-empate .modal_content{
+    width: 100%;
+}
+
+.modal .modal-empate .modal__placar{
+    font-size: 200px;
+    color: rgb(112, 0, 146);
+    font-weight: 600;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.modal .modal-empate .modal__placar > div{
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+}
+
+.modal .modal-empate .modal__placar .name{
+    font-size: 20px;
+    color: rgb(43, 43, 43);
+    font-weight: 600;
+}
+
+.modal__text-vs{
+    font-size: 60px;
+}
+
+.modal__btn{
+    background-color: rgb(112, 0, 146);
+    color: white;
+    font-size: 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 50%;
+    padding: 20px 30px;
 }

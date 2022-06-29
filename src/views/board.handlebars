@@ -43,6 +43,30 @@
         <p>{{titulo}}</p>
 
         <div class="board"></div>
+
+        <div class="modal" id="modal-finish">
+            <div class="modal-empate" id="modal-empate">
+                <p class="modal__title" id="modal__title">Empate</p>
+                <div class="modal_content">
+                    <div class="modal__placar">
+                        <div>
+                            <label class="name" id="modal_player1-name">Player 1</label>
+                            <span class="score" id="modal_player1-score">10</span>
+                        </div>
+                        <span class="modal__text-vs">vs</span>
+                        <div>
+                            <label class="name" id="modal_player2-name">Player 1</label>
+                            <span class="score" id="modal_player2-score">10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="modal__btn" id="btn-restart" type="button">
+                    Jogar novamente
+                </button>
+                
+            </div>
+        </div>
     </main>
 
     <script type="text/javascript">
@@ -154,7 +178,7 @@
                 cards.forEach(card => {
                     card.style.transform = "rotateY(0deg)";
                 })
-            }, 2000);
+            }, 1500);
         }
 
         // connecting with websocket
@@ -166,7 +190,8 @@
 
         function removePlayer() {
             socket.emit('removeLastPlayer');
-            window.location.href = document.location.origin;
+            alert('Limite de jogadores atingido');
+            window.location.href = "/"
         }
 
         socket.on('setNicknamesInLabels', nicknames => {
@@ -218,8 +243,10 @@
             if (type == 'time') {
                 server.time = value;
 
-                if (server.time == player.time)
+                if (value == player.time){
                     changeCard();
+                }
+                    
             }
         });
 
@@ -246,19 +273,43 @@
         });
 
         socket.on('finish', (data) => {
-            if(data.player1 > data.player2){
-                alert('player 1 venceu');
-                window.location.href = "/"
+
+            const modal = document.getElementById('modal-finish');
+            const box = document.querySelector('#modal-finish .modal-empate');        
+            modal.style.display = 'flex';
+            box.style.display = 'flex';
+
+            document.getElementById('modal_player1-name').innerHTML = data.player1.nickname;
+            document.getElementById('modal_player2-name').innerHTML = data.player2.nickname;
+            document.getElementById('modal_player1-score').innerHTML = data.player1.score;
+            document.getElementById('modal_player2-score').innerHTML = data.player2.score;
+
+            if(data.player1.score > data.player2.score){
+                if(player.time == 2){
+                    document.getElementById('modal__title').innerHTML = 'Você Perdeu :(';
+                }
+                else{
+                    document.getElementById('modal__title').innerHTML = 'Você ganhou :)';
+                }
+                //window.location.href = "/"
             }
-            else if(data.player1 < data.player2){
-                alert('player 2 venceu');
-                window.location.href = "/"
+            else if(data.player1.score < data.player2.score){
+                if(player.time == 1){
+                    document.getElementById('modal__title').innerHTML = 'Você Perdeu :(';
+                }
+                else{
+                    document.getElementById('modal__title').innerHTML = 'Você ganhou :)';
+                }
+                //window.location.href = "/"
             }
             else{
-                alert('temos um empate');
-                window.location.href = "/"
+                document.getElementById('modal__title').innerHTML = 'Empate';
+                //window.location.href = "/"
             }
-            
+        });
+
+        document.getElementById("btn-restart").addEventListener("click", function(){
+            window.location.href = "/"
         });
 
     </script>

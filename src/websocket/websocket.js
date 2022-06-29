@@ -3,16 +3,18 @@ const shuffleCards = require('../utils/randomCards');
 
 let board = [];
 
-const players = [];
+let players = [];
 
 const server = {
     player1: {
         score: 0,
         ready: false,
+        nickname: 'player 1'
     },
     player2: {
         score: 0,
         ready: false,
+        nickname: 'player 2'
     },
     time: 1,
     timer: 4,
@@ -82,8 +84,10 @@ io.on('connection', (socket) => {
 
     socket.on('playerReady', (p) => {
         if (p === 1) {
+            server.player1.nickname = players[0].nickname;
             server.player1.ready = true;
         } else {
+            server.player2.nickname = players[1].nickname;
             server.player2.ready = true;
         }
 
@@ -115,12 +119,20 @@ io.on('connection', (socket) => {
             server.player2.score++;
         }
 
-        if((server.player1.score + server.player2.score) == 3){
-            io.emit('finish', {player1: server.player1.score, player2: server.player2.score});
+        if((server.player1.score + server.player2.score) == 4){
+            io.emit('finish', {player1: server.player1, player2: server.player2});
+            players = [];
+            server.player1.score = 0;
+            server.player1.ready = false;
+            server.player2.score = 0;
+            server.player2.ready = false;
+            server.time = 1;
         }
 
         io.emit('getScore', server);
     });
 
     socket.on('resetTimer', () => timer());
+
 });
+
