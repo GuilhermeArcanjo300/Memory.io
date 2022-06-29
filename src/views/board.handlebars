@@ -145,9 +145,9 @@
             setTimeout(function () {
                 const cards = Array.from(document.querySelectorAll('.board__card'))
                 .filter(element => {
-                    const rigth = element.getAttribute("data-right") == "true";
-                    const change = element.children[0].style.transform == "rotateY(180deg)" ? true : false;
-                    return !rigth && change;
+                    const rigth = element.getAttribute("data-right") == "false";
+                    //const change = element.children[0].style.transform == "rotateY(180deg)" ? true : false;
+                    return rigth;
                 })
                 .map(element => {return element.children[0]});
 
@@ -233,7 +233,8 @@
         });
 
         socket.on('setTimer', (timer) => {
-            document.getElementById('timer').textContent = `0:${String(timer).padStart(2, '0')}`;
+            //document.getElementById('timer').textContent = `0:${String(timer).padStart(2, '0')}`;
+            document.getElementById('timer').textContent = timer;
 
             if (timer == 0) {
                 resetCards();
@@ -243,6 +244,23 @@
         socket.on('changePlayerTime', (gameTime) => {
             server.time = gameTime;
         });
+
+        socket.on('finish', (data) => {
+            if(data.player1 > data.player2){
+                alert('player 1 venceu');
+                window.location.href = "/"
+            }
+            else if(data.player1 < data.player2){
+                alert('player 2 venceu');
+                window.location.href = "/"
+            }
+            else{
+                alert('temos um empate');
+                window.location.href = "/"
+            }
+            
+        });
+
     </script>
 </body>
 </html>

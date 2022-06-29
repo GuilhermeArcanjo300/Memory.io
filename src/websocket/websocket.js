@@ -34,6 +34,7 @@ io.on('connection', (socket) => {
         Intervaltimer = setInterval(() => {
             if (server.timer <= 0) {
                 changePlayerTime();
+                io.emit('setTimer', server.timer);
                 server.timer = 4;
             } else {
                 io.emit('setTimer', server.timer);
@@ -112,6 +113,10 @@ io.on('connection', (socket) => {
             server.player1.score++;
         } else {
             server.player2.score++;
+        }
+
+        if((server.player1.score + server.player2.score) == 3){
+            io.emit('finish', {player1: server.player1.score, player2: server.player2.score});
         }
 
         io.emit('getScore', server);
