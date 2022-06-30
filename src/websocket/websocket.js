@@ -119,7 +119,7 @@ io.on('connection', (socket) => {
             server.player2.score++;
         }
 
-        if((server.player1.score + server.player2.score) == 4){
+        if((server.player1.score + server.player2.score) == 22){
             io.emit('finish', {player1: server.player1, player2: server.player2});
             players = [];
             server.player1.score = 0;
